@@ -19,7 +19,8 @@ services:
       - ./node:/usr/src/app
       - /usr/src/app/node_modules
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     networks:
       - app-network
 
@@ -33,6 +34,12 @@ services:
       - mysql-data:/var/lib/mysql
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
 
 networks:
   app-network:
